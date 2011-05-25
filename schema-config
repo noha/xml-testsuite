@@ -1,0 +1,10 @@
+declare -A schemas
+###
+# configuration of schema files
+#
+# schema[pattern]="schemafile"
+#
+# defines a schema configuration that is applied for filenames that match "pattern".
+# 
+schemas[simple]="simple.xsd"
+schemas[extended]="my-extended.xsd"

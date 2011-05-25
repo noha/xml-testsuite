@@ -1,0 +1,74 @@
+xml testsuite
+-------------
+
+This is a tiny utility that helps running several XML schema files against a bunch 
+of XML files. While developing a XML schema I missed a comparable experience to
+software development where I can just write some tests and run them while evolving
+things.
+
+The approach is really simple. There are three information bits that are needed to
+do a single run:
+
+1 a XML file to be tested
+2 a XML schema that is used to test
+3 a status flag if the test should pass or fail
+
+So we are creating a XML file (1) and encode the schema (2) and the test status (3) in 
+the filename. To ease this a configuration file for schemas has to be created
+
+schema-config
+-------------
+
+The file has a simple structure and assigns a XML schema file to a pattern.
+
+schemas[simple]="simple.xsd"
+
+Every file name that matches "simple" will be assigned to "simple.xsd" to test. Second
+the label "invalid" marks a file as deliberately wrong which means it is supposed to 
+fail. A filename of
+
+simple-example-invalid.xml
+
+passes the test if the validation with the schema in simple.xsd throws an error
+
+how to use
+----------
+
+Just invoke
+
+./xml-testsuite.sh examples/simple*
+
+and you'll see
+
+OK   examples/simple-example-invalid.xml
+OK   examples/simple-example.xml
+
+The script looks for the schema-config file in the current working directory. This way
+a schema-config can be created on purpose. All files to test are given via commandline.
+Errors are reported immediately. If you invoke
+
+./xml-testsuite.sh examples/*
+
+then you get
+
+examples/bogus-example.xml does not match a schema. ignoring...
+---------------
+FAIL examples/bogus-simple-example.xml
+examples/bogus-simple-example.xml:1: element simple: Schemas validity error : Element '{urn:simple:example}simple': Missing child element(s). Expected is ( {urn:simple:example}simplekid ). examples/bogus-simple-example.xml fails to validate
+---------------
+OK   examples/simple-example-invalid.xml
+OK   examples/simple-example.xml
+
+The file bogus-example.xml does not match any schema configuration so it is reported. The next
+file bogus-simple-example.xml does not behave as expected so the test fails and the error is
+printed below it. This way it works quite well to create test files and fix the bugs.
+
+Mac OS X
+--------
+
+The script uses a bash version > 4.0. Mac OS X ships with bash 3.x so the script won't work out
+of the box. If you have macports or homebrew just install the new bash and make sure it is either
+in your PATH or in the script
+
+Author: Norbert Hartl <norbert@hartl.name>
+License is MIT
